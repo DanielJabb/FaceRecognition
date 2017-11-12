@@ -1,0 +1,20 @@
+{
+  "name": "facialrecognition",
+  "version": "1.0.0",
+  "description": "Reads facial features and determines attributes",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Daniel Jabbour",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "fs": "0.0.1-security",
+    "najax": "^1.0.3",
+    "path": "^0.12.7",
+    "request": "^2.83.0"
+  }
+}
