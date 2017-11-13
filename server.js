@@ -11,32 +11,23 @@ server.get("/", function(req, res){
   res.sendFile(__dirname + "/client.html");
 })
 
-server.get("/test", function(req, res) {
-  console.log("it worked");
-  res.send("test")
-})
-
-//Sends input URL to the command prompt
 server.use(bodyParser());
 server.get('/getRaceData', function(req, res) {
-    //res.sendStatus(200);
     console.log(req.query);
 
-  //Use of KAIROS API to upload image information to a JSON file
+  //Use of KAIROS API to retrieve image information
 
   //API ID and Key for usage of API
   var headers = {
     "app_id"          : "YOUR_ID",
-    "app_key"         : "YOUR_KEY"
+    "app_key"         : "YOUR_Key"
   };
 
-  //Image url to detect
-  var payload  = req.body;
   //Test image { "image" : "http://dreamicus.com/data/face/face-04.jpg" };
 
   var url = "http://api.kairos.com/detect";
 
-  // make request 
+  // Make request 
   var options = {
       headers  : headers,
       type: "POST",
@@ -44,21 +35,20 @@ server.get('/getRaceData', function(req, res) {
       dataType: "text"
     };
 
-  najax(url, options, function(response) { //Gets the JSON info in a single variable 'html'
+ //Retrievs the Kairos JSON info in a single variable 'html'
+  najax(url, options, function(response) {
     formatKairosData(response, function(kairosObject) {
       res.send(kairosObject);
     });
   });
 });
 
-//Read output.JSON file and display contents on console
+//Formating returned data from Kairos and parsing through to find relevant information
 function formatKairosData(kairosResponse, callback){
-      //Splitting JSON file containing human analytics by \"
-      console.log(JSON.parse(kairosResponse).images[0].faces)
 
+      //Parsing through the kairosResponse to access object attributes
       var face = JSON.parse(kairosResponse).images[0].faces[0];
 
-      //Defining arrays to store race and correlation value
       var raceData = {
         asian: face.attributes.asian,
         white: face.attributes.white,
@@ -67,6 +57,7 @@ function formatKairosData(kairosResponse, callback){
         other: face.attributes.other
       }
 
+      //Initializing variables to obtain race and correlation level
       var requiredData = {
         race: null,
         max: 0
@@ -79,24 +70,16 @@ function formatKairosData(kairosResponse, callback){
         }
       }
 
-      console.log(requiredData);
       callback(requiredData);
  }
 
-/*
-TO DO
-
->Link image upload function and run function, such that the run function takes in the uploaded image 
-for use with the API
-
->Build front end React UI for image uploading
-
-*/
-
-//Create Server
+//Creating Server
 server.listen(3000, function(){
     console.log("Uploaded server listening on port 3000");
 })
+
+
+//The below comments indicate the initial build for uploading a file
 
 /*
 //Image importing
