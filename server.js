@@ -26,8 +26,8 @@ server.get('/getRaceData', function(req, res) {
 
   //API ID and Key for usage of API
   var headers = {
-    "app_id"          : "969bb654",
-    "app_key"         : "8fe61971bbb4b59f034db4ddf6528043"
+    "app_id"          : "YOUR_ID",
+    "app_key"         : "YOUR_KEY"
   };
 
   //Image url to detect
