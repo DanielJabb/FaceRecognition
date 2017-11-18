@@ -1,83 +1,92 @@
 //Importing relevant libraries (npm)
 var express = require('express');
 var bodyParser = require('body-parser'); //The bodyParser() module is used for parsing the request body, so you can read post data
-var fileUpload = require('express-fileUpload');
+var fileUpload = require('express-fileupload');
 var fs = require('fs');
 var path = require('path');
 var server = express();
 var najax = require('najax');
 
-server.get("/", function(req, res){
-  res.sendFile(__dirname + "/client.html");
+server.get("/", function (req, res) {
+    res.sendFile(__dirname + "/client.html");
 })
 
+//Sends input URL to the command prompt
 server.use(bodyParser());
-server.get('/getRaceData', function(req, res) {
+
+//First Callback level
+server.get('/getRaceData', function (req, res) {
+    console.log(req.query.image); //Logs the image url that is to be dealt with
     console.log(req.query);
+    var obj = {
+        image: req.query.image
+    }
+    console.log(obj)
 
-  //Use of KAIROS API to retrieve image information
+    //Use of KAIROS API to send image inforamtion to 
 
-  //API ID and Key for usage of API
-  var headers = {
-    "app_id"          : "YOUR_ID",
-    "app_key"         : "YOUR_Key"
-  };
-
-  //Test image { "image" : "http://dreamicus.com/data/face/face-04.jpg" };
-
-  var url = "http://api.kairos.com/detect";
-
-  // Make request 
-  var options = {
-      headers  : headers,
-      type: "POST",
-      data: JSON.stringify(req.query),
-      dataType: "text"
+    //API ID and Key for usage of API
+    var headers = {
+        "app_id": req.query.app_id,
+        "app_key": req.query.key
     };
 
- //Retrievs the Kairos JSON info in a single variable 'html'
-  najax(url, options, function(response) {
-    formatKairosData(response, function(kairosObject) {
-      res.send(kairosObject);
+    var url = "http://api.kairos.com/detect";
+
+    // make request 
+    var options = {
+        headers: headers,
+        type: "POST",
+        data: JSON.stringify(obj),
+        dataType: "text"
+    };
+
+    //Second Callback Level
+    najax(url, options, function (response) { //Gets the object info in a single variable 'response'
+        //Third Callback level
+        formatKairosData(response, function (kairosObject) { //Formats Kairos Data to return the race that is most observable in the facial complexion of the image
+            res.send(kairosObject);
+        });
     });
-  });
 });
 
-//Formating returned data from Kairos and parsing through to find relevant information
-function formatKairosData(kairosResponse, callback){
+//Read output.JSON file and display contents on console
+function formatKairosData(kairosResponse, callback) {
+    //Splitting JSON file containing human analytics by \"
+    console.log(JSON.parse(kairosResponse).images[0].faces)
+    console.log("/////////////////////////////////////")
 
-      //Parsing through the kairosResponse to access object attributes
-      var face = JSON.parse(kairosResponse).images[0].faces[0];
+    var face = JSON.parse(kairosResponse).images[0].faces[0];
 
-      var raceData = {
+    //Defining arrays to store race and correlation value
+    var raceData = {
         asian: face.attributes.asian,
         white: face.attributes.white,
         hispanic: face.attributes.hispanic,
         black: face.attributes.black,
         other: face.attributes.other
-      }
+    }
 
-      //Initializing variables to obtain race and correlation level
-      var requiredData = {
+    var requiredData = {
         race: null,
         max: 0
-      };
+    };
 
-      for (var race in raceData) {
+    for (var race in raceData) {
         if (requiredData.max < raceData[race]) {
-          requiredData.race = race;
-          requiredData.max = raceData[race];
+            requiredData.race = race;
+            requiredData.max = raceData[race];
         }
-      }
+    }
+    callback(requiredData);
+}
 
-      callback(requiredData);
- }
 
-//Creating Server
-server.listen(3000, function(){
+
+//Create Server
+server.listen(process.env.PORT || 3000, function () {
     console.log("Uploaded server listening on port 3000");
 })
-
 
 //The below comments indicate the initial build for uploading a file
 
