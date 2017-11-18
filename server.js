@@ -16,12 +16,9 @@ server.use(bodyParser());
 
 //First Callback level
 server.get('/getRaceData', function (req, res) {
-    console.log(req.query.image); //Logs the image url that is to be dealt with
-    console.log(req.query);
     var obj = {
         image: req.query.image
     }
-    console.log(obj)
 
     //Use of KAIROS API to send image inforamtion to 
 
@@ -53,8 +50,6 @@ server.get('/getRaceData', function (req, res) {
 //Read output.JSON file and display contents on console
 function formatKairosData(kairosResponse, callback) {
     //Splitting JSON file containing human analytics by \"
-    console.log(JSON.parse(kairosResponse).images[0].faces)
-    console.log("/////////////////////////////////////")
 
     var face = JSON.parse(kairosResponse).images[0].faces[0];
 

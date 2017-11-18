@@ -81,7 +81,7 @@
                 },
                 url: '/getRaceData',
                 success: function(data) {
-                    $("#output").html(JSON.stringify(data));
+                    $("#output").html("Race: " + data.race + " Correlation: " + data.max*100 + "%");
                 }
             })
         }
