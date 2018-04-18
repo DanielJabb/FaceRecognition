@@ -12,4 +12,4 @@ To use this, you need to obtain API credentials from Kairos (https://www.kairos.
 
 You also need to have node installed. To do this, see https://nodejs.org/en/
 
-Once installed and you can run npm start in the project directory.
+Once installed, you can run npm start in the project directory.
